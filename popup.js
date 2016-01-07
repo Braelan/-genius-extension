@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
             }
 
+            chrome.tabs.executeScript(null,{file: "content_script.js"})
       // chrome.tabs.executeScript({
       //   code: "var progress = document.getElementsByClassName('unified_player-progress')[0] || 'undefined'\n" +
       //         "var width = 0 \n" +
