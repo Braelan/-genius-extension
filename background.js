@@ -9,19 +9,21 @@ chrome.runtime.onMessage.addListener( function (request, sender, sendResponse) {
     console.log('sending number')
     TRACK_NUMBER ++
       sendResponse({number: TRACK_NUMBER})
-  } else if (request.action === "advance") {
-  console.log('advance script received')
-  sendResponse({action: "request received"})
-  debugger
-  chrome.tabs.update({url: request.url})
-  }
+    }
+  //  else if (request.action === "advance") {
+  // console.log('advance script received')
+  // sendResponse({action: "request received"})
+  //
+  // chrome.tabs.update({url: request.url})
+  // }
 
 })
 
+chrome.tabs.onUpdated.addListener(function(tabId, props){
+  if( props.status === "complete"  && ACTION === true){
 
-chrome.webNavigation.onCompleted.addListener(function(details){
-  console.log('navigating')
-  if (ACTION === true){
-  chrome.tabs.executeScript(null, {file: "content_script.js"})
+      chrome.tabs.executeScript(tabId, {file: "content_script.js"})
+
+
   }
 })

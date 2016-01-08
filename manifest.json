@@ -20,7 +20,9 @@
   "permissions": [
     "activeTab",
     "tabs",
-    "webNavigation"
+    "webNavigation",
+    "http://*/*",
+    "https://*/*"
 
   ]
 

@@ -18,15 +18,15 @@ p1 = new Promise( function(resolve, reject) {chrome.runtime.sendMessage({action:
 var progressBar = document.getElementsByClassName('unified_player-progress')[0] || 'undefined'
 
 var pressPlay = function (progressBar) {
-    if(progressBar !== 'undefined'){
+
       document.getElementsByClassName('unified_player-play_pause')[0].click()
-    }
+
 }
 
 var endOfSong = function ( count) {
         var loops = 0
         var done = false
-        var sentPromise = false
+        var sentRequest = false
       endSong = setInterval(function() {
        if(progressBar !== 'undefined'){
          loops ++
@@ -35,10 +35,11 @@ var endOfSong = function ( count) {
       if (width > 95) {
         done = true
       }
+      if ((done || (progressBar === 'undefined' && loops > 30) || (isNaN(width) && loops > 30)) & !sentRequest) {
 
-      if (done || progressBar === 'undefined' || (isNaN(width) && loops > 4)) {
-        var href = document.getElementsByClassName('collection_list secondary_list')[0].getElementsByTagName('li')[count].getElementsByTagName('a')[0].href
-        chrome.runtime.sendMessage({action: "advance", url: href})
+        sentRequest = true
+      document.getElementsByClassName('collection_list secondary_list')[0].getElementsByTagName('li')[count].getElementsByTagName('a')[0].click()
+        // chrome.runtime.sendMessage({action: "advance", url: href})
         clearInterval(endSong)
       }
     }, 500)
@@ -46,8 +47,21 @@ var endOfSong = function ( count) {
 }
 
 
+var tryPressPlay = function() {
+  var counter = 0;
+  check = setInterval(function() {
+      counter ++
+    var progressBar = document.getElementsByClassName('unified_player-progress')[0] || 'undefined'
+    if(progressBar !== 'undefined'){
+      pressPlay()
+      clearInterval(check)
+    }else if (counter > 5) {clearInterval(check)}
+
+  },1000)
+}
+
 var playSong = function (){
-    pressPlay()
+    tryPressPlay()
     p1.then( function(track_number) {
       console.log(track_number)
     endOfSong( track_number)
@@ -57,19 +71,3 @@ var playSong = function (){
 }
 
 playSong();
-// document.addEventListener("DOMContentLoaded", function() {
-// chrome.tabs.query({currentWindow: true, active: true}, function(tabs) {
-//
-//   chrome.permissions.request({
-//     permissions: ['activeTab'],
-//     origins: ['http://www.genius.com/*', "https://www.genius.com/*"]
-//   }, function(granted) {
-//     if (granted){
-//       chrome.runtime.sendMessage({action: "advance"})
-// }else {  console.log('hello')}
-// })
-// })
-// })
-
-// chrome.runtime.sendMessage({action: "advance"})
-// pressPlay()
