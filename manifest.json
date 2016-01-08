@@ -20,8 +20,8 @@
   "permissions": [
     "activeTab",
     "tabs",
-    "https://www.genius.com/*",
-    "http://www.genius.com/*"
+    "webNavigation"
+
   ]
 
 }
