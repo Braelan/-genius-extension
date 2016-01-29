@@ -10,6 +10,11 @@ chrome.runtime.onMessage.addListener( function (request, sender, sendResponse) {
     TRACK_NUMBER ++
       sendResponse({number: TRACK_NUMBER})
     }
+  if(request.action === "done"){
+    console.log("reset to 0")
+    TRACK_NUMBER = 0
+    sendResponse({number: TRACK_NUMBER})
+  }
   //  else if (request.action === "advance") {
   // console.log('advance script received')
   // sendResponse({action: "request received"})

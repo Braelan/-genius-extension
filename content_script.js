@@ -9,37 +9,38 @@ p1 = new Promise( function(resolve, reject) {chrome.runtime.sendMessage({action:
 }
 )
 
-// p1.then( function(val) {
-//   console.log(val)
-// })
 
-
-
-var progressBar = document.getElementsByClassName('unified_player-progress')[0] || 'undefined'
+var progressBar = parseInt(document.getElementsByClassName('media_control-scubber-handle')[0]) || 'undefined'
 
 var pressPlay = function (progressBar) {
 
-      document.getElementsByClassName('unified_player-play_pause')[0].click()
+      document.getElementsByTagName('play-pause-button')[0].click()
 
 }
 
 var endOfSong = function ( count) {
+        var width = 0;
         var loops = 0
         var done = false
+        var progressBar = document.getElementsByClassName('media_control-scubber-handle')[0] || 'undefined'
         var sentRequest = false
       endSong = setInterval(function() {
+        loops ++
        if(progressBar !== 'undefined'){
-         loops ++
-           width = parseInt(progressBar.style.width)
+           width = parseInt(progressBar.style.left)
       }
+
       if (width > 95) {
         done = true
       }
-      if ((done || (progressBar === 'undefined' && loops > 30) || (isNaN(width) && loops > 30)) & !sentRequest) {
+
+      if ((done || (progressBar === 'undefined' && loops > 20) || (isNaN(width) && loops > 20)) & !sentRequest) {
 
         sentRequest = true
-      document.getElementsByClassName('collection_list secondary_list')[0].getElementsByTagName('li')[count].getElementsByTagName('a')[0].click()
-        // chrome.runtime.sendMessage({action: "advance", url: href})
+      var nextSong = document.getElementsByClassName('track_listing track_listing--columns')[0].getElementsByTagName('div')[count].getElementsByTagName('a')[0]
+          if (nextSong != "undefined"){
+            nextSong.click()
+          }
         clearInterval(endSong)
       }
     }, 500)
@@ -51,7 +52,7 @@ var tryPressPlay = function() {
   var counter = 0;
   check = setInterval(function() {
       counter ++
-    var progressBar = document.getElementsByClassName('unified_player-progress')[0] || 'undefined'
+    var progressBar = document.getElementsByClassName('media_control-scubber-handle')[0] || 'undefined'
     if(progressBar !== 'undefined'){
       pressPlay()
       clearInterval(check)
